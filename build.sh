@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]; then
-    echo "usage: $(basename $0) <mc_version> <SkyFactory_major_version> <SkyFactory_version>"
+if [ -z $1 ] || [ -z $2 ] || [ -z $3 ] || [-z $4 ] ; then
+    echo "usage: $(basename $0) <mc_version> <Forge_version> <SkyFactory_major_version> <SkyFactory_version>"
     echo "requirements"
     echo "    openjdk-8-jre-headless"
     echo "    git"
-    echo"     unzipped SkyFactory Server mod files in /vagrant folder"
+    echo "     unzipped SkyFactory Server mod files in /vagrant folder"
     exit 1
 fi
 
@@ -32,8 +32,9 @@ fi
 
 app_version=$1
 image_tag=$app_version
-skyfactory_major_version=$2
-skyfactory_version=$3
+forge_version=$2
+skyfactory_major_version=$3
+skyfactory_version=$4
 skyfactory_path="/vagrant/SkyFactory-${skyfactory_major_version}_Server_${skyfactory_version}"
 if [ ! -d "${skyfactory_path}" ] ; then
   echo "Please download and unzip ${skyfactory_path}."
@@ -100,7 +101,7 @@ sed "s/SED_REPLACE_TAG_APP_VERSION/${app_version}/g" "${project_dir}/Dockerfile.
 
 # Build.
 echo "Building $local_repo_tag"
-docker build "${project_dir}" --no-cache --build-arg RCONPWD="${rconpwd}" --build-arg APP_VERSION="${app_version}" --build-arg SKYFACTORY_VERSION="${launcher_version}"  -t "${local_repo_tag}"
+docker build "${project_dir}" --no-cache --build-arg RCONPWD="${rconpwd}" --build-arg APP_VERSION="${app_version}" --build-arg FORGE_VERSION="${forge_version}" --build-arg SKYFACTORY_VERSION="${launcher_version}"  -t "${local_repo_tag}"
 
 errchk $? 'Docker build failed.'
 

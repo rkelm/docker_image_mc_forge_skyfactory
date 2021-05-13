@@ -1,12 +1,18 @@
 FROM rkelm/forge_minecraft_jdk8_2:SED_REPLACE_TAG_APP_VERSION
 
 ARG APP_VERSION
+ARG FORGE_VERSION
 ARG SKYFACTORY_VERSION
 
 ENV APP_VERSION $APP_VERSION
+ENV FORGE_VERSION $FORGE_VERSION
 ENV APP_NAME Forge SkyFactory Minecraft
 
 ADD rootfs /
+
+RUN cp "${APP_DIR}/forge-${APP_VERSION}-${FORGE_VERSION}.jar" "${INSTALL_DIR}/server/"
+RUN rm "${APP_DIR}/forge-${APP_VERSION}-${FORGE_VERSION}.jar"
+RUN ln -s "${INSTALL_DIR}/server/forge-${APP_VERSION}-${FORGE_VERSION}.jar" "${APP_DIR}/forge-${APP_VERSION}-${FORGE_VERSION}.jar"
 
 RUN echo -e ' ************************************************** \n' \
   "Docker Image to run app ${APP_NAME} ${APP_VERSION}. \n" \
@@ -26,4 +32,3 @@ VOLUME ["${SERVER_DIR}", "${SERVER_DIR}/logs"]
 EXPOSE 25565 25575
 
 CMD ["/bin/cat", "/image_info.txt"]
-
